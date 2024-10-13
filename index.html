@@ -17,6 +17,8 @@
     </label>
     <button type="submit">Generate a name</button>
   </form>
+
+  <div id="result"></div>
 </body>
 
 <script>
@@ -45,12 +47,7 @@
 
     const generatedName = generateName(syllables);
 
-    let resultDiv = document.getElementById('result');
-    if (!resultDiv) {
-      resultDiv = document.createElement('div');
-      resultDiv.id = 'result';
-      document.body.appendChild(resultDiv);
-    }
+    const resultDiv = document.getElementById('result');
     resultDiv.textContent = `Generated Name: ${generatedName}`;
   });
 </script>
