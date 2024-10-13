@@ -38,9 +38,23 @@
     function generateName(syllables) {
       let name = '';
       for (let i = 0; i < syllables; i++) {
-        const consonant = consonants[Math.floor(Math.random() * consonants.length)];
-        const vowel = vowels[Math.floor(Math.random() * vowels.length)];
-        name += consonant + vowel;
+        const syllableType = Math.floor(Math.random() * 3); // 0, 1, or 2
+        let syllable = '';
+        if (syllableType === 0) {
+          // Consonant-Vowel
+          syllable = consonants[Math.floor(Math.random() * consonants.length)] + vowels[Math.floor(Math.random() * vowels.length)];
+        } else if (syllableType === 1) {
+          // Vowel-Consonant
+          syllable = vowels[Math.floor(Math.random() * vowels.length)] + consonants[Math.floor(Math.random() * consonants.length)];
+        } else {
+          // Consonant-Vowel-Consonant or Vowel-Consonant-Vowel
+          if (Math.random() < 0.5) {
+            syllable = consonants[Math.floor(Math.random() * consonants.length)] + vowels[Math.floor(Math.random() * vowels.length)] + consonants[Math.floor(Math.random() * consonants.length)];
+          } else {
+            syllable = vowels[Math.floor(Math.random() * vowels.length)] + consonants[Math.floor(Math.random() * consonants.length)] + vowels[Math.floor(Math.random() * vowels.length)];
+          }
+        }
+        name += syllable;
       }
       return name.charAt(0).toUpperCase() + name.slice(1);
     }
