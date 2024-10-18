@@ -15,6 +15,11 @@
       flex-direction: column;
     }
 
+    fieldset {
+      display: flex;
+      flex-direction: column;
+    }
+
     #generate-name-form {
       display: inline-flex;
       flex-direction: column;
@@ -30,16 +35,52 @@
 
 <body>
   <form id="generate-name-form">
-    <label for="syllables">Number of syllables:</label>
-    <input type="number" id="syllables" name="syllables" min="1" required value="2">
-    <label for="random-syllables">
-      <input type="checkbox" id="random-syllables" name="random-syllables">
-      Use random number of syllables (1-5)
-    </label>
-    <label for="add-dash">
-      <input type="checkbox" id="add-dash" name="add-dash">
-      Add dash between syllables
-    </label>
+    <fieldset>
+      <legend>General settings</legend>
+      <label for="syllables">Number of syllables:</label>
+      <input type="number" id="syllables" name="syllables" min="1" required value="2">
+      <label for="random-syllables">
+        <input type="checkbox" id="random-syllables" name="random-syllables">
+        Use random number of syllables (1-5)
+      </label>
+      <label for="add-dash">
+        <input type="checkbox" id="add-dash" name="add-dash">
+        Add dash between syllables
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Syllables settings</legend>
+      <label>
+        <input type="checkbox" id="type-0" name="syllable-types" value="0" checked>
+        Consonant-Vowel
+      </label>
+      <label>
+        <input type="checkbox" id="type-1" name="syllable-types" value="1" checked>
+        Consonant-Vowel-Consonant
+      </label>
+      <label>
+        <input type="checkbox" id="type-2" name="syllable-types" value="2" checked>
+        Consonant-Vowel-Vowel
+      </label>
+      <label>
+        <input type="checkbox" id="type-3" name="syllable-types" value="3" checked>
+        Vowel-Consonant
+      </label>
+      <label>
+        <input type="checkbox" id="type-4" name="syllable-types" value="4" checked>
+        Vowel-Consonant-Vowel
+      </label>
+      <label>
+        <input type="checkbox" id="type-5" name="syllable-types" value="5" checked>
+        Vowel-Vowel-Consonant
+      </label>
+      <label>
+        <input type="checkbox" id="type-6" name="syllable-types" value="6" checked>
+        Vowel-Vowel
+      </label>
+    </fieldset>
+
     <button type="submit" data-umami-event="Generate a name">Generate a name</button>
   </form>
 
@@ -67,6 +108,13 @@
       syllables = Math.floor(Math.random() * 5) + 1; // Random number between 1 and 5
     }
 
+    const selectedTypes = Array.from(document.querySelectorAll('input[name="syllable-types"]:checked')).map(input => parseInt(input.value));
+
+    if (selectedTypes.length === 0) {
+      alert('Please select at least one syllable type.');
+      return;
+    }
+
     const vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
     const consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z'];
 
@@ -80,31 +128,39 @@
 
     function generateName(syllables) {
       let name = '';
+
       for (let i = 0; i < syllables; i++) {
-        const syllableType = Math.floor(Math.random() * 7); // 0-6
+        const syllableType = selectedTypes[Math.floor(Math.random() * selectedTypes.length)];
         let syllable = '';
 
         if (syllableType === 0) {
           // Consonant-Vowel
           syllable = randomConsonant() + randomVowel();
+          console.log('> Consonant-Vowel: ' + syllable);
         } else if (syllableType === 1) {
           // Consonant-Vowel-Consonant
           syllable = randomConsonant() + randomVowel() + randomConsonant();
+          console.log('> Consonant-Vowel-Consonant: ' + syllable);
         } else if (syllableType === 2) {
           // Consonant-Vowel-Vowel
           syllable = randomConsonant() + randomVowel() + randomVowel();
+          console.log('> Consonant-Vowel-Vowel: ' + syllable);
         } else if (syllableType === 3) {
           // Vowel-Consonant
           syllable = randomVowel() + randomConsonant();
+          console.log('> Vowel-Consonant: ' + syllable);
         } else if (syllableType === 4) {
           // Vowel-Consonant-Vowel
           syllable = randomVowel() + randomConsonant() + randomVowel();
+          console.log('> Vowel-Consonant-Vowel: ' + syllable);
         } else if (syllableType === 5) {
           // Vowel-Vowel-Consonant
           syllable = randomVowel() + randomVowel() + randomConsonant();
+          console.log('> Vowel-Vowel-Consonant: ' + syllable);
         } else {
           // Vowel-Vowel
           syllable = randomVowel() + randomVowel();
+          console.log('> Vowel-Vowel: ' + syllable);
         }
 
         if (addDash && i > 0) {
