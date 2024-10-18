@@ -6,11 +6,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script defer src="https://cloud.umami.is/script.js" data-website-id="b8494def-f350-473b-ab4c-ea018ab6b2b2"></script>
   <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
     #generate-name-form {
       display: inline-flex;
       flex-direction: column;
       gap: 10px;
     }
+
     #result {
       margin-top: 10px;
     }
@@ -33,7 +43,7 @@
     <button type="submit" data-umami-event="Generate a name">Generate a name</button>
   </form>
 
-  <div id="result"></div>
+  <div id="result">&mdash;</div>
 </body>
 
 <script>
