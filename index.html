@@ -36,30 +36,40 @@
     const vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
     const consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z'];
 
+    function randomConsonant() {
+      return consonants[Math.floor(Math.random() * consonants.length)];
+    }
+
+    function randomVowel() {
+      return vowels[Math.floor(Math.random() * vowels.length)];
+    }
+
     function generateName(syllables) {
       let name = '';
       for (let i = 0; i < syllables; i++) {
-        const syllableType = Math.floor(Math.random() * 4); // 0, 1, 2, or 3
+        const syllableType = Math.floor(Math.random() * 5); // 0, 1, 2, 3, or 4
         let syllable = '';
+
         if (syllableType === 0) {
           // Consonant-Vowel
-          syllable = consonants[Math.floor(Math.random() * consonants.length)] + vowels[Math.floor(Math.random() * vowels.length)];
+          syllable = randomConsonant() + randomVowel();
         } else if (syllableType === 1) {
-          // Vowel-Consonant
-          syllable = vowels[Math.floor(Math.random() * vowels.length)] + consonants[Math.floor(Math.random() * consonants.length)];
+          // Consonant-Vowel-Consonant
+          syllable = randomConsonant() + randomVowel() + randomConsonant();
         } else if (syllableType === 2) {
-          // Consonant-Vowel-Consonant or Vowel-Consonant-Vowel
-          if (Math.random() < 0.5) {
-            syllable = consonants[Math.floor(Math.random() * consonants.length)] + vowels[Math.floor(Math.random() * vowels.length)] + consonants[Math.floor(Math.random() * consonants.length)];
-          } else {
-            syllable = vowels[Math.floor(Math.random() * vowels.length)] + consonants[Math.floor(Math.random() * consonants.length)] + vowels[Math.floor(Math.random() * vowels.length)];
-          }
-        } else {
           // Consonant-Vowel-Vowel
-          syllable = consonants[Math.floor(Math.random() * consonants.length)] + vowels[Math.floor(Math.random() * vowels.length)] + vowels[Math.floor(Math.random() * vowels.length)];
+          syllable = randomConsonant() + randomVowel() + randomVowel();
+        } else if (syllableType === 3) {
+          // Vowel-Consonant
+          syllable = randomVowel() + randomConsonant();
+        } else {
+          // Vowel-Consonant-Vowel
+          syllable = randomVowel() + randomConsonant() + randomVowel();
         }
+
         name += syllable;
       }
+
       return name.charAt(0).toUpperCase() + name.slice(1);
     }
 
