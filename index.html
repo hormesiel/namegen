@@ -37,10 +37,10 @@
   <form id="generate-name-form">
     <fieldset>
       <legend>General settings</legend>
-      <label for="syllables">Number of syllables:</label>
-      <input type="number" id="syllables" name="syllables" min="1" required value="2">
-      <label for="random-syllables">
-        <input type="checkbox" id="random-syllables" name="random-syllables">
+      <label for="syllable-count">Number of syllables</label>
+      <input type="number" id="syllable-count" name="syllable-count" min="1" required value="2">
+      <label for="random-syllable-count">
+        <input type="checkbox" id="random-syllable-count" name="random-syllable-count">
         Use random number of syllables (1-5)
       </label>
       <label for="add-dash">
@@ -51,33 +51,37 @@
 
     <fieldset>
       <legend>Syllables settings</legend>
+      <label for="random-syllable-types">
+        <input type="checkbox" id="random-syllable-types" name="random-syllable-types">
+        Random
+      </label>
       <label>
         <input type="checkbox" id="type-0" name="syllable-types" value="0" checked>
-        Consonant-Vowel
+        0. Consonant-Vowel
       </label>
       <label>
         <input type="checkbox" id="type-1" name="syllable-types" value="1" checked>
-        Consonant-Vowel-Consonant
+        1. Consonant-Vowel-Consonant
       </label>
       <label>
         <input type="checkbox" id="type-2" name="syllable-types" value="2" checked>
-        Consonant-Vowel-Vowel
+        2. Consonant-Vowel-Vowel
       </label>
       <label>
         <input type="checkbox" id="type-3" name="syllable-types" value="3" checked>
-        Vowel-Consonant
+        3. Vowel-Consonant
       </label>
       <label>
         <input type="checkbox" id="type-4" name="syllable-types" value="4" checked>
-        Vowel-Consonant-Vowel
+        4. Vowel-Consonant-Vowel
       </label>
       <label>
         <input type="checkbox" id="type-5" name="syllable-types" value="5" checked>
-        Vowel-Vowel-Consonant
+        5. Vowel-Vowel-Consonant
       </label>
       <label>
         <input type="checkbox" id="type-6" name="syllable-types" value="6" checked>
-        Vowel-Vowel
+        6. Vowel-Vowel
       </label>
     </fieldset>
 
@@ -92,23 +96,56 @@
     // Retrieve the user's choice from localStorage
     const addDash = localStorage.getItem('addDash') === 'true';
     document.getElementById('add-dash').checked = addDash;
+
+    // Setup the 'random syllable types' checkbox
+    const randomSyllableTypes = document.getElementById('random-syllable-types');
+    const syllableTypeCheckboxes = document.querySelectorAll('input[name="syllable-types"]');
+
+    randomSyllableTypes.addEventListener('change', function () {
+      syllableTypeCheckboxes.forEach(checkbox => {
+        checkbox.disabled = randomSyllableTypes.checked;
+      });
+    });
   });
+
+  const allSyllableTypes = [0, 1, 2, 3, 4, 5, 6];
+
+  function updateSyllableTypeCheckboxes(selectedTypes) {
+    const syllableTypeCheckboxes = document.querySelectorAll('input[name="syllable-types"]');
+    syllableTypeCheckboxes.forEach(checkbox => {
+      checkbox.checked = selectedTypes.includes(parseInt(checkbox.value));
+    });
+  }
 
   document.getElementById('generate-name-form').addEventListener('submit', function (event) {
     event.preventDefault();
+    console.group('Generate a name');
 
     const addDash = document.getElementById('add-dash').checked;
-    const randomSyllables = document.getElementById('random-syllables').checked;
-    let syllables = parseInt(document.getElementById('syllables').value);
+    const randomSyllableCount = document.getElementById('random-syllable-count').checked;
+    const randomSyllableTypes = document.getElementById('random-syllable-types').checked;
+    let syllableCount = parseInt(document.getElementById('syllable-count').value);
 
     // Save the user's choice to localStorage
     localStorage.setItem('addDash', addDash);
 
-    if (randomSyllables) {
-      syllables = Math.floor(Math.random() * 5) + 1; // Random number between 1 and 5
+    if (randomSyllableCount) {
+      syllableCount = Math.floor(Math.random() * 6) + 1; // Random number between 1 and 6
     }
 
-    const selectedTypes = Array.from(document.querySelectorAll('input[name="syllable-types"]:checked')).map(input => parseInt(input.value));
+    let selectedTypes;
+    if (randomSyllableTypes) {
+      selectedTypes = [];
+
+      while (selectedTypes.length === 0) {
+        selectedTypes = allSyllableTypes.filter(() => Math.random() < 0.5);
+      }
+
+      updateSyllableTypeCheckboxes(selectedTypes);
+      console.log('- Random syllable types: ' + selectedTypes);
+    } else {
+      selectedTypes = Array.from(document.querySelectorAll('input[name="syllable-types"]:checked')).map(input => parseInt(input.value));
+    }
 
     if (selectedTypes.length === 0) {
       alert('Please select at least one syllable type.');
@@ -136,31 +173,31 @@
         if (syllableType === 0) {
           // Consonant-Vowel
           syllable = randomConsonant() + randomVowel();
-          console.log('> Consonant-Vowel: ' + syllable);
+          console.log('> Consonant-Vowel (0): ' + syllable);
         } else if (syllableType === 1) {
           // Consonant-Vowel-Consonant
           syllable = randomConsonant() + randomVowel() + randomConsonant();
-          console.log('> Consonant-Vowel-Consonant: ' + syllable);
+          console.log('> Consonant-Vowel-Consonant (1): ' + syllable);
         } else if (syllableType === 2) {
           // Consonant-Vowel-Vowel
           syllable = randomConsonant() + randomVowel() + randomVowel();
-          console.log('> Consonant-Vowel-Vowel: ' + syllable);
+          console.log('> Consonant-Vowel-Vowel (2): ' + syllable);
         } else if (syllableType === 3) {
           // Vowel-Consonant
           syllable = randomVowel() + randomConsonant();
-          console.log('> Vowel-Consonant: ' + syllable);
+          console.log('> Vowel-Consonant (3): ' + syllable);
         } else if (syllableType === 4) {
           // Vowel-Consonant-Vowel
           syllable = randomVowel() + randomConsonant() + randomVowel();
-          console.log('> Vowel-Consonant-Vowel: ' + syllable);
+          console.log('> Vowel-Consonant-Vowel (4): ' + syllable);
         } else if (syllableType === 5) {
           // Vowel-Vowel-Consonant
           syllable = randomVowel() + randomVowel() + randomConsonant();
-          console.log('> Vowel-Vowel-Consonant: ' + syllable);
+          console.log('> Vowel-Vowel-Consonant (5): ' + syllable);
         } else {
           // Vowel-Vowel
           syllable = randomVowel() + randomVowel();
-          console.log('> Vowel-Vowel: ' + syllable);
+          console.log('> Vowel-Vowel (6): ' + syllable);
         }
 
         if (addDash && i > 0) {
@@ -173,10 +210,12 @@
       return name.charAt(0).toUpperCase() + name.slice(1);
     }
 
-    const generatedName = generateName(syllables);
+    const generatedName = generateName(syllableCount);
 
     const resultDiv = document.getElementById('result');
     resultDiv.textContent = `Generated Name: ${generatedName}`;
+
+    console.groupEnd();
   });
 </script>
 
