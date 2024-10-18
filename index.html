@@ -41,7 +41,7 @@
       <input type="number" id="syllable-count" name="syllable-count" min="1" required value="2">
       <label for="random-syllable-count">
         <input type="checkbox" id="random-syllable-count" name="random-syllable-count">
-        Use random number of syllables (1-5)
+        Use random number of syllables (1-3)
       </label>
       <label for="add-dash">
         <input type="checkbox" id="add-dash" name="add-dash">
@@ -97,10 +97,16 @@
     const addDash = localStorage.getItem('addDash') === 'true';
     document.getElementById('add-dash').checked = addDash;
 
+    // Setup the 'random syllable count' checkbox
+    const randomSyllableCount = document.getElementById('random-syllable-count');
+    const syllableCountInput = document.getElementById('syllable-count');
+    randomSyllableCount.addEventListener('change', function () {
+      syllableCountInput.disabled = randomSyllableCount.checked;
+    });
+
     // Setup the 'random syllable types' checkbox
     const randomSyllableTypes = document.getElementById('random-syllable-types');
     const syllableTypeCheckboxes = document.querySelectorAll('input[name="syllable-types"]');
-
     randomSyllableTypes.addEventListener('change', function () {
       syllableTypeCheckboxes.forEach(checkbox => {
         checkbox.disabled = randomSyllableTypes.checked;
@@ -130,7 +136,12 @@
     localStorage.setItem('addDash', addDash);
 
     if (randomSyllableCount) {
-      syllableCount = Math.floor(Math.random() * 6) + 1; // Random number between 1 and 6
+      syllableCount = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
+
+      const syllableCountInput = document.getElementById('syllable-count');
+      syllableCountInput.value = syllableCount;
+
+      console.log('- Random syllable count: ' + syllableCount);
     }
 
     let selectedTypes;
@@ -145,11 +156,11 @@
       console.log('- Random syllable types: ' + selectedTypes);
     } else {
       selectedTypes = Array.from(document.querySelectorAll('input[name="syllable-types"]:checked')).map(input => parseInt(input.value));
-    }
 
-    if (selectedTypes.length === 0) {
-      alert('Please select at least one syllable type.');
-      return;
+      if (selectedTypes.length === 0) {
+        alert('Please select at least one syllable type.');
+        return;
+      }
     }
 
     const vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
