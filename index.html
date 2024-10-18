@@ -92,29 +92,69 @@
 </body>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Retrieve the user's choice from localStorage
-    const addDash = localStorage.getItem('addDash') === 'true';
-    document.getElementById('add-dash').checked = addDash;
+  const allSyllableTypes = [0, 1, 2, 3, 4, 5, 6];
 
+  document.addEventListener('DOMContentLoaded', function () {
     // Setup the 'random syllable count' checkbox
-    const randomSyllableCount = document.getElementById('random-syllable-count');
+    const randomSyllableCountCheckbox = document.getElementById('random-syllable-count');
     const syllableCountInput = document.getElementById('syllable-count');
-    randomSyllableCount.addEventListener('change', function () {
-      syllableCountInput.disabled = randomSyllableCount.checked;
+    randomSyllableCountCheckbox.addEventListener('change', function () {
+      syllableCountInput.disabled = randomSyllableCountCheckbox.checked;
     });
 
     // Setup the 'random syllable types' checkbox
-    const randomSyllableTypes = document.getElementById('random-syllable-types');
+    const randomSyllableTypesCheckbox = document.getElementById('random-syllable-types');
     const syllableTypeCheckboxes = document.querySelectorAll('input[name="syllable-types"]');
-    randomSyllableTypes.addEventListener('change', function () {
+    randomSyllableTypesCheckbox.addEventListener('change', function () {
       syllableTypeCheckboxes.forEach(checkbox => {
-        checkbox.disabled = randomSyllableTypes.checked;
+        checkbox.disabled = randomSyllableTypesCheckbox.checked;
       });
+    });
+
+    // Restore user's choices
+    restoreUserChoices();
+
+    // Disable inputs based on the initial state of the checkboxes
+    syllableCountInput.disabled = randomSyllableCountCheckbox.checked;
+    syllableTypeCheckboxes.forEach(checkbox => {
+      checkbox.disabled = randomSyllableTypesCheckbox.checked;
     });
   });
 
-  const allSyllableTypes = [0, 1, 2, 3, 4, 5, 6];
+  function restoreUserChoices() {
+    const addDash = localStorage.getItem('addDash') === 'true';
+    document.getElementById('add-dash').checked = addDash;
+
+    const randomSyllableCount = localStorage.getItem('randomSyllableCount') === 'true';
+    document.getElementById('random-syllable-count').checked = randomSyllableCount;
+
+    const randomSyllableTypes = localStorage.getItem('randomSyllableTypes') === 'true';
+    document.getElementById('random-syllable-types').checked = randomSyllableTypes;
+
+    const selectedTypes = JSON.parse(localStorage.getItem('selectedTypes') || '[]');
+    allSyllableTypes.forEach(type => {
+      document.getElementById(`type-${type}`).checked = selectedTypes.includes(type);
+    });
+
+    const syllableCount = localStorage.getItem('syllableCount');
+    if (syllableCount) {
+      document.getElementById('syllable-count').value = syllableCount;
+    }
+  }
+
+  function saveUserChoices() {
+    const addDash = document.getElementById('add-dash').checked;
+    const randomSyllableCount = document.getElementById('random-syllable-count').checked;
+    const randomSyllableTypes = document.getElementById('random-syllable-types').checked;
+    const selectedTypes = Array.from(document.querySelectorAll('input[name="syllable-types"]:checked')).map(input => parseInt(input.value));
+    const syllableCount = document.getElementById('syllable-count').value;
+
+    localStorage.setItem('addDash', addDash);
+    localStorage.setItem('randomSyllableCount', randomSyllableCount);
+    localStorage.setItem('randomSyllableTypes', randomSyllableTypes);
+    localStorage.setItem('selectedTypes', JSON.stringify(selectedTypes));
+    localStorage.setItem('syllableCount', syllableCount);
+  }
 
   function updateSyllableTypeCheckboxes(selectedTypes) {
     const syllableTypeCheckboxes = document.querySelectorAll('input[name="syllable-types"]');
@@ -123,6 +163,7 @@
     });
   }
 
+  // Setup form submission
   document.getElementById('generate-name-form').addEventListener('submit', function (event) {
     event.preventDefault();
     console.group('Generate a name');
@@ -131,9 +172,6 @@
     const randomSyllableCount = document.getElementById('random-syllable-count').checked;
     const randomSyllableTypes = document.getElementById('random-syllable-types').checked;
     let syllableCount = parseInt(document.getElementById('syllable-count').value);
-
-    // Save the user's choice to localStorage
-    localStorage.setItem('addDash', addDash);
 
     if (randomSyllableCount) {
       syllableCount = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
@@ -162,6 +200,8 @@
         return;
       }
     }
+
+    saveUserChoices();
 
     const vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
     const consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z'];
