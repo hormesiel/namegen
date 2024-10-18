@@ -39,7 +39,7 @@
     function generateName(syllables) {
       let name = '';
       for (let i = 0; i < syllables; i++) {
-        const syllableType = Math.floor(Math.random() * 3); // 0, 1, or 2
+        const syllableType = Math.floor(Math.random() * 4); // 0, 1, 2, or 3
         let syllable = '';
         if (syllableType === 0) {
           // Consonant-Vowel
@@ -47,13 +47,16 @@
         } else if (syllableType === 1) {
           // Vowel-Consonant
           syllable = vowels[Math.floor(Math.random() * vowels.length)] + consonants[Math.floor(Math.random() * consonants.length)];
-        } else {
+        } else if (syllableType === 2) {
           // Consonant-Vowel-Consonant or Vowel-Consonant-Vowel
           if (Math.random() < 0.5) {
             syllable = consonants[Math.floor(Math.random() * consonants.length)] + vowels[Math.floor(Math.random() * vowels.length)] + consonants[Math.floor(Math.random() * consonants.length)];
           } else {
             syllable = vowels[Math.floor(Math.random() * vowels.length)] + consonants[Math.floor(Math.random() * consonants.length)] + vowels[Math.floor(Math.random() * vowels.length)];
           }
+        } else {
+          // Consonant-Vowel-Vowel
+          syllable = consonants[Math.floor(Math.random() * consonants.length)] + vowels[Math.floor(Math.random() * vowels.length)] + vowels[Math.floor(Math.random() * vowels.length)];
         }
         name += syllable;
       }
