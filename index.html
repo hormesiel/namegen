@@ -62,7 +62,7 @@
     function generateName(syllables) {
       let name = '';
       for (let i = 0; i < syllables; i++) {
-        const syllableType = Math.floor(Math.random() * 6); // 0, 1, 2, 3, 4, or 5
+        const syllableType = Math.floor(Math.random() * 7); // 0-6
         let syllable = '';
 
         if (syllableType === 0) {
@@ -80,9 +80,12 @@
         } else if (syllableType === 4) {
           // Vowel-Consonant-Vowel
           syllable = randomVowel() + randomConsonant() + randomVowel();
-        } else {
+        } else if (syllableType === 5) {
           // Vowel-Vowel-Consonant
           syllable = randomVowel() + randomVowel() + randomConsonant();
+        } else {
+          // Vowel-Vowel
+          syllable = randomVowel() + randomVowel();
         }
 
         if (addDash && i > 0) {
