@@ -16,6 +16,10 @@
       <input type="checkbox" id="random-syllables" name="random-syllables">
       Use random number of syllables (1-5)
     </label>
+    <label for="add-dash">
+      <input type="checkbox" id="add-dash" name="add-dash">
+      Add dash between syllables
+    </label>
     <button type="submit" data-umami-event="Generate a name">Generate a name</button>
   </form>
 
@@ -26,6 +30,7 @@
   document.getElementById('generate-name-form').addEventListener('submit', function (event) {
     event.preventDefault();
 
+    const addDash = document.getElementById('add-dash').checked;
     const randomSyllables = document.getElementById('random-syllables').checked;
     let syllables = parseInt(document.getElementById('syllables').value);
 
@@ -68,6 +73,10 @@
         } else {
           // Vowel-Vowel-Consonant
           syllable = randomVowel() + randomVowel() + randomConsonant();
+        }
+
+        if (addDash && i > 0) {
+          name += '-';
         }
 
         name += syllable;
